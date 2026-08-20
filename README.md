@@ -14,7 +14,47 @@ Los datos de origen están en [`data/`](data/). El modelo contiene cinco entidad
 
 ![Diagrama entidad-relación](docs/foodtrack-er.svg)
 
-La relación es: un foodtruck tiene muchos productos, pedidos y ubicaciones; un pedido tiene muchos ítems; y un producto puede aparecer en muchos ítems. La evolución del esquema agrega `comments` a `orders`. El análisis de reglas, patrones y mejoras está en la [documentación del modelo](docs/modelo-negocio.md).
+La evolución del esquema agrega `comments` a `orders`. El análisis ampliado está en la [documentación del modelo](docs/modelo-negocio.md).
+
+### Relaciones y cardinalidades
+
+| Relación | Cardinalidad | Regla de negocio |
+| --- | --- | --- |
+| `foodtrucks` - `products` | 1 a 0..N | Cada producto pertenece a un único foodtruck. |
+| `foodtrucks` - `orders` | 1 a 0..N | Cada pedido se realiza a un único foodtruck. |
+| `foodtrucks` - `locations` | 1 a 0..N | Cada ubicación registrada pertenece a un único foodtruck. |
+| `orders` - `order_items` | 1 a 0..N | Cada ítem pertenece a un único pedido. La base permite crear un pedido antes de agregar ítems. |
+| `products` - `order_items` | 1 a 0..N | Cada ítem hace referencia a un único producto. |
+
+El lado `0..N` indica que una entidad padre puede no tener registros relacionados todavía. Por ejemplo, un foodtruck puede existir sin productos cargados; la clave foránea protege que todo registro hijo tenga un padre válido.
+
+### Restricciones del modelo
+
+| Tabla | Restricciones principales |
+| --- | --- |
+| `foodtrucks` | Clave primaria en `foodtruck_id`; datos descriptivos obligatorios. |
+| `products` | FK a `foodtrucks`; `UNIQUE (foodtruck_id, name)`; precio mayor a cero; stock no negativo. |
+| `orders` | FK a `foodtrucks`; total no negativo; estado permitido: `pendiente`, `entregado` o `cancelado`; `comments` opcional. |
+| `locations` | FK a `foodtrucks`; `UNIQUE (foodtruck_id, location_date)` para evitar dos ubicaciones diarias del mismo foodtruck. |
+| `order_items` | FK a `orders` y `products`; `UNIQUE (order_id, product_id)`; cantidad mayor a cero. |
+
+### Patrones de negocio implícitos
+
+- **Catálogo por foodtruck:** cada foodtruck maneja sus productos y su stock.
+- **Operación móvil:** las ubicaciones permiten conocer la zona en la que opera un foodtruck cada día.
+- **Patrón cabecera-detalle:** `orders` guarda la información general del pedido y `order_items` sus líneas de compra.
+- **Ciclo de vida del pedido:** `status` conserva el estado operativo sin eliminar el historial.
+- **Evolución versionada:** la columna `comments` es una modificación estructural independiente del esquema inicial.
+
+### Mejoras recomendadas
+
+| Mejora | Justificación |
+| --- | --- |
+| Agregar `unit_price` a `order_items` | Conserva el precio vendido cuando el precio actual del producto cambia y permite reconstruir el total histórico. |
+| Validar que producto y pedido sean del mismo foodtruck | La estructura actual podría permitir asociar un producto de otro foodtruck; se puede reforzar con claves compuestas o un trigger. |
+| Calcular o validar `orders.total` | Se debe definir si el total incluye impuestos, descuentos o costos adicionales, y verificarlo contra los ítems. |
+| Crear `stock_movements` | Permite auditar ventas, ingresos, ajustes y devoluciones en lugar de conservar solo el stock actual. |
+| Ampliar `locations` con horarios o coordenadas | Diferencia turnos y posiciones precisas cuando una zona no es suficiente. |
 
 ## Estructura
 
