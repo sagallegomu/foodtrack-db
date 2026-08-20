@@ -40,7 +40,7 @@ Creá una conexión **SQL Server** con estos valores:
 | Host | `localhost` |
 | Puerto | `1433` |
 | Base inicial | `master` |
-| Usuario | `sa` |
+| Usuario | Tu usuario configurado en SQL Server (por ejemplo, `sa`) |
 | Contraseña | La contraseña definida al crear el contenedor |
 
 Probá la conexión antes de continuar.
@@ -79,12 +79,12 @@ Editá `.env` y completá la contraseña. Usá exactamente el nombre del driver 
 ```env
 FOODTRACK_DB_SERVER=localhost,1433
 FOODTRACK_DB_NAME=FoodTrack
-FOODTRACK_DB_USER=sa
+FOODTRACK_DB_USER=TU_USUARIO_SQL_SERVER
 FOODTRACK_DB_PASSWORD=TU_CONTRASENA
 FOODTRACK_DB_DRIVER=ODBC Driver 18 for SQL Server
 ```
 
-Después ejecutá:
+Reemplazá `TU_USUARIO_SQL_SERVER` por el mismo usuario con el que DBeaver se conecta a SQL Server. Después ejecutá:
 
 ```bash
 python cargar_datos.py

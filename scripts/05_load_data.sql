@@ -1,7 +1,16 @@
 /*
     Carga los CSV con BULK INSERT.
-    SQL Server corre en Docker: montá la carpeta data/ del proyecto como
-    /var/opt/mssql/import dentro del contenedor antes de ejecutar este script.
+    SQL Server corre en Docker. En macOS o Windows se usa el mismo BULK INSERT:
+    la única diferencia es el comando para copiar data/ al contenedor.
+
+    macOS (Terminal):
+    docker cp "/ruta/a/foodtrack-db/data/." sql_server_demo:/var/opt/mssql/import
+
+    Windows (PowerShell):
+    docker cp "C:\ruta\a\foodtrack-db\data\." sql_server_demo:/var/opt/mssql/import
+
+    Después de copiar los CSV, ejecutá los bloques BULK INSERT de este archivo.
+    Las rutas FROM son Linux porque indican la ubicación dentro del contenedor.
 */
 USE FoodTrack;
 
