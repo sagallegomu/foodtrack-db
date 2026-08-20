@@ -34,6 +34,15 @@ Elegí la guía según el sistema operativo. Ambas explican requisitos, conexió
 | macOS | [Guía para macOS](docs/guia-macos.md) |
 | Windows | [Guía para Windows](docs/guia-windows.md) |
 
+## Alternativas de importación CSV
+
+La entrega oficial usa SQL Server. Si el docente autoriza trabajar con otro motor, estas guías explican cómo importar los mismos CSV; no reemplazan los scripts ni la automatización diseñados para SQL Server.
+
+| Motor alternativo | Método nativo | Guía |
+| --- | --- | --- |
+| PostgreSQL | `\copy` / `COPY FROM` | [Guía para PostgreSQL](docs/guia-postgresql.md) |
+| MySQL | `LOAD DATA LOCAL INFILE` | [Guía para MySQL](docs/guia-mysql.md) |
+
 ## Flujo de carga
 
 1. Ejecutar los scripts de esquema en el orden indicado por la guía.
