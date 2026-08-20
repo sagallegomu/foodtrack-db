@@ -54,8 +54,7 @@ Ejecutá en DBeaver, por orden:
 3. `scripts/02_create_tables.sql`.
 4. `scripts/03_constraints.sql`.
 5. `scripts/04_schema_update.sql`.
-6. `scripts/07_create_failed_orders.sql`.
-7. En `scripts/05_load_data.sql`, ejecutá únicamente los tres bloques activos: `foodtrucks`, `products` y `locations`.
+6. En `scripts/05_load_data.sql`, ejecutá únicamente los tres bloques activos: `foodtrucks`, `products` y `locations`.
 
 No descomentés los bloques de `orders` ni `order_items`: Python los cargará en el paso siguiente.
 
@@ -90,7 +89,7 @@ Reemplazá `TU_USUARIO_SQL_SERVER` por el mismo usuario con el que DBeaver se co
 python cargar_datos.py
 ```
 
-El resultado esperado es 2 pedidos y 3 ítems insertados, sin rechazados. Los errores de inserción se guardan en `dbo.failed_orders`.
+El resultado esperado es 2 pedidos y 3 ítems insertados, sin rechazados. Si ocurre un error, Python crea automáticamente `dbo.failed_orders` y guarda allí el detalle.
 
 ## 6. Validar
 
