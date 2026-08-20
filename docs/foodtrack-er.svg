@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900" role="img" aria-labelledby="title description">
+  <title id="title">Diagrama entidad-relación de FoodTrack</title>
+  <desc id="description">Modelo relacional de foodtrucks, products, orders, order_items y locations. Incluye claves, restricciones y cardinalidades.</desc>
+  <style>
+    .bg { fill: #f7fafc; }
+    .entity { fill: #ffffff; stroke: #2f566d; stroke-width: 2; }
+    .head { fill: #174d69; }
+    .entity-title { font: 700 22px Arial, sans-serif; fill: #ffffff; text-anchor: middle; }
+    .field { font: 15px Arial, sans-serif; fill: #1e3542; }
+    .key { font: 700 14px Arial, sans-serif; fill: #8a3ffc; }
+    .constraint { font: 12px Arial, sans-serif; fill: #526b79; }
+    .divider { stroke: #d5e3e9; stroke-width: 1; }
+    .relation { stroke: #527b90; stroke-width: 2; fill: none; }
+    .card { font: 700 14px Arial, sans-serif; fill: #174d69; }
+    .legend { font: 13px Arial, sans-serif; fill: #3f5968; }
+    .legend-title { font: 700 15px Arial, sans-serif; fill: #174d69; }
+  </style>
+  <rect class="bg" width="1400" height="900"/>
+  <text x="50" y="48" style="font: 700 28px Arial, sans-serif; fill: #123047;">FoodTrack - Diagrama ER</text>
+  <text x="50" y="75" style="font: 15px Arial, sans-serif; fill: #526b79;">Modelo inicial con claves, restricciones y cardinalidades del esquema relacional.</text>
+
+  <!-- Relaciones -->
+  <path class="relation" d="M 340 290 C 365 230, 375 205, 400 205"/>
+  <text class="card" x="350" y="265">1</text><text class="card" x="370" y="215">0..N</text>
+  <path class="relation" d="M 340 350 C 365 390, 375 425, 400 425"/>
+  <text class="card" x="350" y="370">1</text><text class="card" x="370" y="410">0..N</text>
+  <path class="relation" d="M 340 415 C 365 535, 375 690, 400 690"/>
+  <text class="card" x="350" y="460">1</text><text class="card" x="370" y="675">0..N</text>
+  <path class="relation" d="M 780 440 C 795 440, 805 440, 820 440"/>
+  <text class="card" x="785" y="427">1</text><text class="card" x="802" y="427">0..N</text>
+  <path class="relation" d="M 780 230 C 795 280, 805 350, 820 390"/>
+  <text class="card" x="787" y="267">1</text><text class="card" x="802" y="365">0..N</text>
+
+  <!-- foodtrucks -->
+  <g transform="translate(40 190)">
+    <rect class="entity" width="300" height="270" rx="5"/>
+    <rect class="head" width="300" height="48" rx="5"/>
+    <text class="entity-title" x="150" y="31">foodtrucks</text>
+    <text class="key" x="18" y="76">PK</text><text class="field" x="56" y="76">foodtruck_id  INT</text>
+    <text class="field" x="18" y="104">name  NVARCHAR(100) NOT NULL</text>
+    <text class="field" x="18" y="132">cuisine_type  NVARCHAR(50) NOT NULL</text>
+    <text class="field" x="18" y="160">city  NVARCHAR(100) NOT NULL</text>
+    <line class="divider" x1="15" y1="180" x2="285" y2="180"/>
+    <text class="constraint" x="18" y="207">Entidad principal de la operación.</text>
+    <text class="constraint" x="18" y="228">Un foodtruck puede tener muchos</text>
+    <text class="constraint" x="18" y="246">productos, pedidos y ubicaciones.</text>
+  </g>
+
+  <!-- products -->
+  <g transform="translate(400 95)">
+    <rect class="entity" width="380" height="270" rx="5"/>
+    <rect class="head" width="380" height="48" rx="5"/>
+    <text class="entity-title" x="190" y="31">products</text>
+    <text class="key" x="18" y="76">PK</text><text class="field" x="56" y="76">product_id  INT</text>
+    <text class="key" x="18" y="104">FK</text><text class="field" x="56" y="104">foodtruck_id  INT -&gt; foodtrucks</text>
+    <text class="field" x="18" y="132">name  NVARCHAR(100) NOT NULL</text>
+    <text class="field" x="18" y="160">price  DECIMAL(10,2) NOT NULL</text>
+    <text class="field" x="18" y="188">stock  INT NOT NULL</text>
+    <line class="divider" x1="15" y1="207" x2="365" y2="207"/>
+    <text class="constraint" x="18" y="231">UNIQUE (foodtruck_id, name)</text>
+    <text class="constraint" x="18" y="249">CHECK price &gt; 0; CHECK stock &gt;= 0</text>
+  </g>
+
+  <!-- orders -->
+  <g transform="translate(400 370)">
+    <rect class="entity" width="380" height="270" rx="5"/>
+    <rect class="head" width="380" height="48" rx="5"/>
+    <text class="entity-title" x="190" y="31">orders</text>
+    <text class="key" x="18" y="76">PK</text><text class="field" x="56" y="76">order_id  INT</text>
+    <text class="key" x="18" y="104">FK</text><text class="field" x="56" y="104">foodtruck_id  INT -&gt; foodtrucks</text>
+    <text class="field" x="18" y="132">order_date  DATE NOT NULL</text>
+    <text class="field" x="18" y="160">status  NVARCHAR(30) NOT NULL</text>
+    <text class="field" x="18" y="188">total  DECIMAL(10,2) NOT NULL</text>
+    <text class="field" x="18" y="216">comments  NVARCHAR(255) NULL</text>
+    <line class="divider" x1="15" y1="232" x2="365" y2="232"/>
+    <text class="constraint" x="18" y="254">CHECK status: pendiente, entregado, cancelado</text>
+  </g>
+
+  <!-- locations -->
+  <g transform="translate(400 665)">
+    <rect class="entity" width="380" height="190" rx="5"/>
+    <rect class="head" width="380" height="48" rx="5"/>
+    <text class="entity-title" x="190" y="31">locations</text>
+    <text class="key" x="18" y="76">PK</text><text class="field" x="56" y="76">location_id  INT</text>
+    <text class="key" x="18" y="104">FK</text><text class="field" x="56" y="104">foodtruck_id  INT -&gt; foodtrucks</text>
+    <text class="field" x="18" y="132">location_date  DATE NOT NULL</text>
+    <text class="field" x="18" y="160">zone  NVARCHAR(100) NOT NULL</text>
+    <text class="constraint" x="18" y="181">UNIQUE (foodtruck_id, location_date)</text>
+  </g>
+
+  <!-- order_items -->
+  <g transform="translate(820 285)">
+    <rect class="entity" width="340" height="245" rx="5"/>
+    <rect class="head" width="340" height="48" rx="5"/>
+    <text class="entity-title" x="170" y="31">order_items</text>
+    <text class="key" x="18" y="76">PK</text><text class="field" x="56" y="76">order_item_id  INT</text>
+    <text class="key" x="18" y="104">FK</text><text class="field" x="56" y="104">order_id  INT -&gt; orders</text>
+    <text class="key" x="18" y="132">FK</text><text class="field" x="56" y="132">product_id  INT -&gt; products</text>
+    <text class="field" x="18" y="160">quantity  INT NOT NULL</text>
+    <line class="divider" x1="15" y1="179" x2="325" y2="179"/>
+    <text class="constraint" x="18" y="203">UNIQUE (order_id, product_id)</text>
+    <text class="constraint" x="18" y="223">CHECK quantity &gt; 0</text>
+  </g>
+
+  <!-- Legend -->
+  <g transform="translate(805 650)">
+    <rect x="0" y="0" width="355" height="175" fill="#eef6f9" stroke="#b8d2de" rx="5"/>
+    <text class="legend-title" x="18" y="30">Leyenda y lectura</text>
+    <text class="legend" x="18" y="58">PK: clave primaria. FK: clave foránea.</text>
+    <text class="legend" x="18" y="82">1: exactamente una entidad padre.</text>
+    <text class="legend" x="18" y="106">0..N: cero o muchas entidades hijas.</text>
+    <text class="legend" x="18" y="135">Las cardinalidades reflejan las restricciones</text>
+    <text class="legend" x="18" y="153">actuales de la base, no solo el caso ideal.</text>
+  </g>
+</svg>

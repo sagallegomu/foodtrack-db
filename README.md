@@ -12,9 +12,9 @@ Los datos de origen están en [`data/`](data/). El modelo contiene cinco entidad
 - `orders`: pedidos asociados a un foodtruck.
 - `order_items`: productos y cantidades incluidos en cada pedido.
 
-![Diagrama entidad-relación](docs/foodtrack-er.png)
+![Diagrama entidad-relación](docs/foodtrack-er.svg)
 
-La relación es: un foodtruck tiene muchos productos, pedidos y ubicaciones; un pedido tiene muchos ítems; y un producto puede aparecer en muchos ítems. La evolución del esquema agrega `comments` a `orders`.
+La relación es: un foodtruck tiene muchos productos, pedidos y ubicaciones; un pedido tiene muchos ítems; y un producto puede aparecer en muchos ítems. La evolución del esquema agrega `comments` a `orders`. El análisis de reglas, patrones y mejoras está en la [documentación del modelo](docs/modelo-negocio.md).
 
 ## Estructura
 
