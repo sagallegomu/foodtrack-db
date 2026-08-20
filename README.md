@@ -41,7 +41,7 @@ Abrí una conexión a SQL Server en DBeaver y ejecutá los archivos de `scripts/
 3. `03_constraints.sql`
 4. `04_schema_update.sql`
 5. `07_create_failed_orders.sql` — necesario para el extra de Python.
-6. `05_load_data.sql` — después de reemplazar las rutas de ejemplo por rutas que el **servicio de SQL Server** pueda leer. Carga las tres tablas base; sus bloques `orders` y `order_items` están comentados.
+6. `05_load_data.sql` — usa la ruta `/var/opt/mssql/import`, por lo que el contenedor SQL Server debe tener montada allí la carpeta `data/` del proyecto. Carga las tres tablas base; sus bloques `orders` y `order_items` están comentados.
 7. Elegí una de estas rutas para `orders`:
    - **BULK INSERT:** descomentá y ejecutá primero el bloque `orders`, luego el bloque `order_items` de `05_load_data.sql`.
    - **Python:** ejecutá `cargar_datos.py` y después descomentá y ejecutá solamente el bloque `order_items`.
@@ -49,7 +49,7 @@ Abrí una conexión a SQL Server en DBeaver y ejecutá los archivos de `scripts/
 
 La carga completa espera los conteos: 2 foodtrucks, 4 productos, 2 ubicaciones, 2 pedidos y 3 ítems. Las restricciones impiden precios no positivos, stock negativo, cantidades no positivas, totales negativos y estados de pedido no permitidos.
 
-> `BULK INSERT` lee archivos desde el equipo o contenedor donde se ejecuta SQL Server; no desde DBeaver. Si el servidor no puede acceder a la ruta, usá el asistente de importación de DBeaver o una ruta compartida y autorizada.
+> `BULK INSERT` lee archivos desde el contenedor donde se ejecuta SQL Server, no desde DBeaver. Si no montaste `/var/opt/mssql/import`, usá el asistente de importación de DBeaver o configurá un volumen compartido.
 
 ## Carga programática con Python
 
