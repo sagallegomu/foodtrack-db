@@ -3,4 +3,3 @@ IF DB_ID(N'FoodTrack') IS NULL
 BEGIN
     CREATE DATABASE FoodTrack;
 END;
-GO

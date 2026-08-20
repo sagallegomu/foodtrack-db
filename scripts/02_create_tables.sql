@@ -1,5 +1,4 @@
 USE FoodTrack;
-GO
 
 CREATE TABLE dbo.foodtrucks (
     foodtruck_id INT NOT NULL,
@@ -8,7 +7,6 @@ CREATE TABLE dbo.foodtrucks (
     city NVARCHAR(100) NOT NULL,
     CONSTRAINT PK_foodtrucks PRIMARY KEY (foodtruck_id)
 );
-GO
 
 CREATE TABLE dbo.products (
     product_id INT NOT NULL,
@@ -18,7 +16,6 @@ CREATE TABLE dbo.products (
     stock INT NOT NULL,
     CONSTRAINT PK_products PRIMARY KEY (product_id)
 );
-GO
 
 CREATE TABLE dbo.orders (
     order_id INT NOT NULL,
@@ -28,7 +25,6 @@ CREATE TABLE dbo.orders (
     total DECIMAL(10, 2) NOT NULL,
     CONSTRAINT PK_orders PRIMARY KEY (order_id)
 );
-GO
 
 CREATE TABLE dbo.locations (
     location_id INT NOT NULL,
@@ -37,7 +33,6 @@ CREATE TABLE dbo.locations (
     zone NVARCHAR(100) NOT NULL,
     CONSTRAINT PK_locations PRIMARY KEY (location_id)
 );
-GO
 
 CREATE TABLE dbo.order_items (
     order_item_id INT NOT NULL,
@@ -46,4 +41,3 @@ CREATE TABLE dbo.order_items (
     quantity INT NOT NULL,
     CONSTRAINT PK_order_items PRIMARY KEY (order_item_id)
 );
-GO
