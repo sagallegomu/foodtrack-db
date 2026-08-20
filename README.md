@@ -71,6 +71,14 @@ Luego ejecutá `05_load_data.sql` desde DBeaver. El nombre `sql_server_demo` se 
 
 El extra `cargar_datos.py` inserta `data/orders.csv` y `data/order_items.csv`, en ese orden, y registra cada fallo en `dbo.failed_orders`. Es la vía prevista para cargar las dos tablas finales; si preferís `BULK INSERT`, descomentá ambos bloques de `05_load_data.sql` y omití esta ejecución.
 
+En macOS, Python requiere `unixODBC` y el controlador de Microsoft antes de instalar `pyodbc`:
+
+```bash
+brew install unixodbc
+brew tap microsoft/mssql-release https://github.com/microsoft/homebrew-mssql-release
+HOMEBREW_ACCEPT_EULA=Y brew install msodbcsql18
+```
+
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
