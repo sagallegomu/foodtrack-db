@@ -30,39 +30,8 @@ class CargadorDatos:
     def __init__(self):
         self.conexion = pyodbc.connect(crear_cadena_conexion())
         self.cursor = self.conexion.cursor()
-        self.crear_tabla_errores()
         self.pedidos_cargados = 0
         self.items_cargados = 0
-
-    def crear_tabla_errores(self):
-        """Crea la tabla auxiliar si todavía no existe."""
-        self.cursor.execute(
-            """
-            IF OBJECT_ID(N'dbo.failed_orders', N'U') IS NULL
-            BEGIN
-                CREATE TABLE dbo.failed_orders (
-                    failed_order_id INT IDENTITY(1, 1) PRIMARY KEY,
-                    source_order_id INT NULL,
-                    raw_data NVARCHAR(1000) NOT NULL,
-                    error_message NVARCHAR(2000) NOT NULL,
-                    failed_at DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME()
-                );
-            END;
-            """
-        )
-        self.conexion.commit()
-
-    def registrar_error(self, order_id, fila, error):
-        """Guarda una fila que no pudo insertarse en la tabla auxiliar."""
-        self.cursor.execute(
-            """
-            INSERT INTO dbo.failed_orders (source_order_id, raw_data, error_message)
-            VALUES (?, ?, ?)
-            """,
-            order_id,
-            str(dict(fila)),
-            str(error),
-        )
 
     def cargar_pedidos(self):
         """Inserta cada fila de data/orders.csv."""
@@ -86,8 +55,6 @@ class CargadorDatos:
                     self.pedidos_cargados += 1
                 except Exception as error:
                     self.conexion.rollback()
-                    self.registrar_error(fila["order_id"], fila, error)
-                    self.conexion.commit()
                     print(f"Pedido {fila['order_id']} no cargado: {error}")
 
     def cargar_items(self):
@@ -111,8 +78,6 @@ class CargadorDatos:
                     self.items_cargados += 1
                 except Exception as error:
                     self.conexion.rollback()
-                    self.registrar_error(fila["order_id"], fila, error)
-                    self.conexion.commit()
                     print(f"Ítem {fila['order_item_id']} no cargado: {error}")
 
     def cerrar_conexion(self):

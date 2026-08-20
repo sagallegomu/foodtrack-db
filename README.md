@@ -49,6 +49,7 @@ La entrega oficial usa SQL Server. Si el docente autoriza trabajar con otro moto
 2. Cargar con SQL las tablas `foodtrucks`, `products` y `locations` mediante `scripts/05_load_data.sql`.
 3. Cargar con Python `orders` y `order_items` mediante `cargar_datos.py`.
 4. Ejecutar `scripts/06_validate_data.sql` y comprobar los conteos: 2 foodtrucks, 4 productos, 2 ubicaciones, 2 pedidos y 3 ítems.
+5. Ejecutar por último `scripts/07_create_failed_orders.sql` como extra independiente.
 
 `BULK INSERT` lee archivos desde el contenedor SQL Server, no desde DBeaver. Por eso las guías incluyen el paso de copiar los CSV al contenedor `sql_server_demo` en `/var/opt/mssql/import`.
 

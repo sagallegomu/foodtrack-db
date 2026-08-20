@@ -84,8 +84,10 @@ Reemplazá `TU_USUARIO_SQL_SERVER` por el mismo usuario con el que DBeaver se co
 py cargar_datos.py
 ```
 
-El resultado esperado es 2 pedidos y 3 ítems insertados, sin rechazados. Si ocurre un error, Python crea automáticamente `dbo.failed_orders` y guarda allí el detalle.
+El resultado esperado es 2 pedidos y 3 ítems insertados, sin rechazados. Si aparece un error, el script lo muestra en pantalla.
 
 ## 6. Validar
 
 En DBeaver ejecutá `scripts/06_validate_data.sql`. Los conteos esperados son: 2 foodtrucks, 4 productos, 2 ubicaciones, 2 pedidos y 3 ítems.
+
+Como último paso opcional, ejecutá `scripts/07_create_failed_orders.sql`. Este script crea la tabla auxiliar `failed_orders` de forma independiente al cargador Python.
