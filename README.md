@@ -41,16 +41,19 @@ Abrí una conexión a SQL Server en DBeaver y ejecutá los archivos de `scripts/
 3. `03_constraints.sql`
 4. `04_schema_update.sql`
 5. `07_create_failed_orders.sql` — necesario para el extra de Python.
-6. `05_load_data.sql` — después de reemplazar las cinco rutas de ejemplo por rutas que el **servicio de SQL Server** pueda leer.
-7. `06_validate_data.sql`
+6. `05_load_data.sql` — después de reemplazar las rutas de ejemplo por rutas que el **servicio de SQL Server** pueda leer. Carga las tres tablas base; sus bloques `orders` y `order_items` están comentados.
+7. Elegí una de estas rutas para `orders`:
+   - **BULK INSERT:** descomentá y ejecutá primero el bloque `orders`, luego el bloque `order_items` de `05_load_data.sql`.
+   - **Python:** ejecutá `cargar_datos.py` y después descomentá y ejecutá solamente el bloque `order_items`.
+8. `06_validate_data.sql`
 
-La carga CSV espera los conteos: 2 foodtrucks, 4 productos, 2 ubicaciones, 2 pedidos y 3 ítems. Las restricciones impiden precios no positivos, stock negativo, cantidades no positivas, totales negativos y estados de pedido no permitidos.
+La carga completa espera los conteos: 2 foodtrucks, 4 productos, 2 ubicaciones, 2 pedidos y 3 ítems. Las restricciones impiden precios no positivos, stock negativo, cantidades no positivas, totales negativos y estados de pedido no permitidos.
 
 > `BULK INSERT` lee archivos desde el equipo o contenedor donde se ejecuta SQL Server; no desde DBeaver. Si el servidor no puede acceder a la ruta, usá el asistente de importación de DBeaver o una ruta compartida y autorizada.
 
 ## Carga programática con Python
 
-El extra `cargar_datos.py` inserta pedidos desde `data/orders.csv` y registra cada fallo en `dbo.failed_orders`.
+El extra `cargar_datos.py` inserta pedidos desde `data/orders.csv` y registra cada fallo en `dbo.failed_orders`. Es la vía prevista para cargar `orders`; si preferís cargar esa tabla con `BULK INSERT`, descomentá su bloque en `05_load_data.sql` y omití esta ejecución.
 
 ```bash
 python3 -m venv .venv
