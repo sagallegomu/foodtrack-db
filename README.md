@@ -42,9 +42,9 @@ Abrí una conexión a SQL Server en DBeaver y ejecutá los archivos de `scripts/
 4. `04_schema_update.sql`
 5. `07_create_failed_orders.sql` — necesario para el extra de Python.
 6. `05_load_data.sql` — usa la ruta `/var/opt/mssql/import`, por lo que el contenedor SQL Server debe tener montada allí la carpeta `data/` del proyecto. Carga las tres tablas base; sus bloques `orders` y `order_items` están comentados.
-7. Elegí una de estas rutas para `orders`:
+7. Elegí una de estas rutas para las dos tablas finales:
    - **BULK INSERT:** descomentá y ejecutá primero el bloque `orders`, luego el bloque `order_items` de `05_load_data.sql`.
-   - **Python:** ejecutá `cargar_datos.py` y después descomentá y ejecutá solamente el bloque `order_items`.
+   - **Python:** ejecutá `cargar_datos.py`; carga primero `orders` y luego `order_items`.
 8. `06_validate_data.sql`
 
 La carga completa espera los conteos: 2 foodtrucks, 4 productos, 2 ubicaciones, 2 pedidos y 3 ítems. Las restricciones impiden precios no positivos, stock negativo, cantidades no positivas, totales negativos y estados de pedido no permitidos.
@@ -69,7 +69,7 @@ Luego ejecutá `05_load_data.sql` desde DBeaver. El nombre `sql_server_demo` se 
 
 ## Carga programática con Python
 
-El extra `cargar_datos.py` inserta pedidos desde `data/orders.csv` y registra cada fallo en `dbo.failed_orders`. Es la vía prevista para cargar `orders`; si preferís cargar esa tabla con `BULK INSERT`, descomentá su bloque en `05_load_data.sql` y omití esta ejecución.
+El extra `cargar_datos.py` inserta `data/orders.csv` y `data/order_items.csv`, en ese orden, y registra cada fallo en `dbo.failed_orders`. Es la vía prevista para cargar las dos tablas finales; si preferís `BULK INSERT`, descomentá ambos bloques de `05_load_data.sql` y omití esta ejecución.
 
 ```bash
 python3 -m venv .venv
@@ -79,12 +79,12 @@ cp .env.example .env
 python cargar_datos.py
 ```
 
-Completá `.env` con los datos de tu instancia SQL Server. Este archivo está ignorado por Git y no debe publicarse. Antes de ejecutar Python, corré `01` a `04` y `07`; cargá primero `foodtrucks` con el script SQL, porque `orders.foodtruck_id` es una clave foránea.
+Completá `.env` con los datos de tu instancia SQL Server. Este archivo está ignorado por Git y no debe publicarse. Antes de ejecutar Python, corré `01` a `04` y `07`, y cargá manualmente `foodtrucks`, `products` y `locations`. Python cargará las dos tablas restantes.
 
 Para usar otro archivo de pedidos:
 
 ```bash
-python cargar_datos.py --file /ruta/a/orders.csv
+python cargar_datos.py --orders-file /ruta/a/orders.csv --items-file /ruta/a/order_items.csv
 ```
 
 ## Tecnologías
