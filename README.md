@@ -51,6 +51,22 @@ La carga completa espera los conteos: 2 foodtrucks, 4 productos, 2 ubicaciones, 
 
 > `BULK INSERT` lee archivos desde el contenedor donde se ejecuta SQL Server, no desde DBeaver. Si no montaste `/var/opt/mssql/import`, usá el asistente de importación de DBeaver o configurá un volumen compartido.
 
+### Copiar los CSV a Docker
+
+El contenedor usado en este proyecto se llama `sql_server_demo` y los scripts esperan los archivos en `/var/opt/mssql/import`. Desde Terminal, ejecutá una sola vez:
+
+```bash
+docker cp "/Users/saragallegomunoz/Documents/Henry/Data Science/M2/Clase 1/foodtrack-db/data/." sql_server_demo:/var/opt/mssql/import
+```
+
+Comprobá que se copiaron los cinco CSV:
+
+```bash
+docker exec sql_server_demo ls -l /var/opt/mssql/import
+```
+
+Luego ejecutá `05_load_data.sql` desde DBeaver. El nombre `sql_server_demo` se usa solamente en los comandos de Docker; no aparece dentro de `BULK INSERT` porque SQL Server ya se está ejecutando en ese contenedor.
+
 ## Carga programática con Python
 
 El extra `cargar_datos.py` inserta pedidos desde `data/orders.csv` y registra cada fallo en `dbo.failed_orders`. Es la vía prevista para cargar `orders`; si preferís cargar esa tabla con `BULK INSERT`, descomentá su bloque en `05_load_data.sql` y omití esta ejecución.
