@@ -1,4 +1,4 @@
-USE FoodTrack;
+USE [foodtrucks];
 
 -- Extra independiente: tabla auxiliar para registrar pedidos fallidos.
 CREATE TABLE dbo.failed_orders (

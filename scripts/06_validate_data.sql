@@ -1,4 +1,4 @@
-USE FoodTrack;
+USE [foodtrucks];
 
 -- Conteos esperados para los CSV incluidos: 2, 4, 2, 2 y 3 respectivamente.
 SELECT 'foodtrucks' AS table_name, COUNT(*) AS row_count FROM dbo.foodtrucks

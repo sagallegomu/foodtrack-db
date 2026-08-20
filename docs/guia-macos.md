@@ -50,7 +50,7 @@ Probá la conexión antes de continuar.
 Ejecutá en DBeaver, por orden:
 
 1. `scripts/01_create_database.sql` conectado a `master`.
-2. Conectate a la nueva base `FoodTrack`.
+2. Conectate a la nueva base `foodtrucks`.
 3. `scripts/02_create_tables.sql`.
 4. `scripts/03_constraints.sql`.
 5. `scripts/04_schema_update.sql`.
@@ -77,7 +77,7 @@ Editá `.env` y completá la contraseña. Usá exactamente el nombre del driver 
 
 ```env
 FOODTRACK_DB_SERVER=localhost,1433
-FOODTRACK_DB_NAME=FoodTrack
+FOODTRACK_DB_NAME=foodtrucks
 FOODTRACK_DB_USER=TU_USUARIO_SQL_SERVER
 FOODTRACK_DB_PASSWORD=TU_CONTRASENA
 FOODTRACK_DB_DRIVER=ODBC Driver 18 for SQL Server

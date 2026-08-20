@@ -12,7 +12,7 @@
     Después de copiar los CSV, ejecutá los bloques BULK INSERT de este archivo.
     Las rutas FROM son Linux porque indican la ubicación dentro del contenedor.
 */
-USE FoodTrack;
+USE [foodtrucks];
 
 BULK INSERT dbo.foodtrucks
 FROM '/var/opt/mssql/import/foodtrucks.csv'

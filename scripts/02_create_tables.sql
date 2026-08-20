@@ -1,4 +1,4 @@
-USE FoodTrack;
+USE [foodtrucks];
 
 CREATE TABLE dbo.foodtrucks (
     foodtruck_id INT NOT NULL,
