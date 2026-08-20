@@ -8,85 +8,112 @@ import pyodbc
 from dotenv import load_dotenv
 
 
-# Carga las credenciales definidas en el archivo .env.
-load_dotenv()
-
 PROJECT_ROOT = Path(__file__).parent
-ORDERS_CSV = PROJECT_ROOT / "data" / "orders.csv"
-ORDER_ITEMS_CSV = PROJECT_ROOT / "data" / "order_items.csv"
 
 
-def registrar_error(cursor, order_id, row, error):
-    """Guarda el detalle de una fila que no pudo insertarse."""
-    cursor.execute(
-        """
-        INSERT INTO dbo.failed_orders (source_order_id, raw_data, error_message)
-        VALUES (?, ?, ?)
-        """,
-        order_id,
-        str(dict(row)),
-        str(error),
+def crear_cadena_conexion():
+    """Lee .env y construye la cadena de conexión a SQL Server."""
+    load_dotenv()
+    return (
+        f"DRIVER={{{os.environ['FOODTRACK_DB_DRIVER']}}};"
+        f"SERVER={os.environ['FOODTRACK_DB_SERVER']};"
+        f"DATABASE={os.environ['FOODTRACK_DB_NAME']};"
+        f"UID={os.environ['FOODTRACK_DB_USER']};"
+        f"PWD={os.environ['FOODTRACK_DB_PASSWORD']};"
+        "TrustServerCertificate=yes;"
     )
 
 
-connection_string = (
-    f"DRIVER={{{os.environ['FOODTRACK_DB_DRIVER']}}};"
-    f"SERVER={os.environ['FOODTRACK_DB_SERVER']};"
-    f"DATABASE={os.environ['FOODTRACK_DB_NAME']};"
-    f"UID={os.environ['FOODTRACK_DB_USER']};"
-    f"PWD={os.environ['FOODTRACK_DB_PASSWORD']};"
-    "TrustServerCertificate=yes;"
-)
+class CargadorDatos:
+    """Se conecta a SQL Server y carga los dos CSV de pedidos."""
 
-connection = pyodbc.connect(connection_string)
-cursor = connection.cursor()
-orders_loaded = 0
-items_loaded = 0
+    def __init__(self):
+        self.conexion = pyodbc.connect(crear_cadena_conexion())
+        self.cursor = self.conexion.cursor()
+        self.pedidos_cargados = 0
+        self.items_cargados = 0
 
-# Primero se cargan los pedidos, porque los ítems dependen de ellos.
-with ORDERS_CSV.open(encoding="utf-8", newline="") as file:
-    for row in csv.DictReader(file):
-        try:
-            cursor.execute(
-                """
-                INSERT INTO dbo.orders (order_id, foodtruck_id, order_date, status, total)
-                VALUES (?, ?, ?, ?, ?)
-                """,
-                row["order_id"],
-                row["foodtruck_id"],
-                row["order_date"],
-                row["status"],
-                row["total"],
-            )
-            connection.commit()
-            orders_loaded += 1
-        except Exception as error:
-            connection.rollback()
-            registrar_error(cursor, row["order_id"], row, error)
-            connection.commit()
-            print(f"Pedido {row['order_id']} no cargado: {error}")
+    def registrar_error(self, order_id, fila, error):
+        """Guarda una fila que no pudo insertarse en la tabla auxiliar."""
+        self.cursor.execute(
+            """
+            INSERT INTO dbo.failed_orders (source_order_id, raw_data, error_message)
+            VALUES (?, ?, ?)
+            """,
+            order_id,
+            str(dict(fila)),
+            str(error),
+        )
 
-# Después se cargan los ítems de cada pedido.
-with ORDER_ITEMS_CSV.open(encoding="utf-8", newline="") as file:
-    for row in csv.DictReader(file):
-        try:
-            cursor.execute(
-                """
-                INSERT INTO dbo.order_items (order_item_id, order_id, product_id, quantity)
-                VALUES (?, ?, ?, ?)
-                """,
-                row["order_item_id"],
-                row["order_id"],
-                row["product_id"],
-                row["quantity"],
-            )
-            connection.commit()
-            items_loaded += 1
-        except Exception as error:
-            connection.rollback()
-            registrar_error(cursor, row["order_id"], row, error)
-            connection.commit()
-            print(f"Ítem {row['order_item_id']} no cargado: {error}")
+    def cargar_pedidos(self):
+        """Inserta cada fila de data/orders.csv."""
+        archivo = PROJECT_ROOT / "data" / "orders.csv"
 
-connection.close()
-print(f"Carga finalizada: {orders_loaded} pedidos y {items_loaded} ítems insertados.")
+        with archivo.open(encoding="utf-8", newline="") as csv_file:
+            for fila in csv.DictReader(csv_file):
+                try:
+                    self.cursor.execute(
+                        """
+                        INSERT INTO dbo.orders (order_id, foodtruck_id, order_date, status, total)
+                        VALUES (?, ?, ?, ?, ?)
+                        """,
+                        fila["order_id"],
+                        fila["foodtruck_id"],
+                        fila["order_date"],
+                        fila["status"],
+                        fila["total"],
+                    )
+                    self.conexion.commit()
+                    self.pedidos_cargados += 1
+                except Exception as error:
+                    self.conexion.rollback()
+                    self.registrar_error(fila["order_id"], fila, error)
+                    self.conexion.commit()
+                    print(f"Pedido {fila['order_id']} no cargado: {error}")
+
+    def cargar_items(self):
+        """Inserta cada fila de data/order_items.csv después de los pedidos."""
+        archivo = PROJECT_ROOT / "data" / "order_items.csv"
+
+        with archivo.open(encoding="utf-8", newline="") as csv_file:
+            for fila in csv.DictReader(csv_file):
+                try:
+                    self.cursor.execute(
+                        """
+                        INSERT INTO dbo.order_items (order_item_id, order_id, product_id, quantity)
+                        VALUES (?, ?, ?, ?)
+                        """,
+                        fila["order_item_id"],
+                        fila["order_id"],
+                        fila["product_id"],
+                        fila["quantity"],
+                    )
+                    self.conexion.commit()
+                    self.items_cargados += 1
+                except Exception as error:
+                    self.conexion.rollback()
+                    self.registrar_error(fila["order_id"], fila, error)
+                    self.conexion.commit()
+                    print(f"Ítem {fila['order_item_id']} no cargado: {error}")
+
+    def cerrar_conexion(self):
+        """Cierra la conexión al terminar la carga."""
+        self.conexion.close()
+
+
+def main():
+    cargador = CargadorDatos()
+
+    try:
+        cargador.cargar_pedidos()
+        cargador.cargar_items()
+        print(
+            f"Carga finalizada: {cargador.pedidos_cargados} pedidos y "
+            f"{cargador.items_cargados} ítems insertados."
+        )
+    finally:
+        cargador.cerrar_conexion()
+
+
+if __name__ == "__main__":
+    main()
