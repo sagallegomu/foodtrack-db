@@ -1,0 +1,2 @@
+ALTER TABLE dbo.foodtrucks
+ADD COLUMN size VARCHAR(20)
